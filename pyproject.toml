@@ -7,8 +7,10 @@ requires-python = ">=3.10"
 dependencies = [
     "flightgear-python>=1.7.0",
     "gym-jsbsim>=0.6.7",
+    "jedi>=0.19.2",
     "jsbsim>=1.2.2",
     "matplotlib>=3.7.5",
     "polars>=1.8.2",
+    "stable-baselines3[extra]>=2.6.0",
     "torch>=2.7.0",
 ]
