@@ -1,0 +1,12 @@
+[project]
+name = "rl-flight"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "flightgear-python>=1.7.0",
+    "jsbsim>=1.2.2",
+    "matplotlib>=3.7.5",
+    "polars>=1.8.2",
+]
