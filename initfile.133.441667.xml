@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<initialize name="IC File" version="2.0">
+
+  <position frame="ECEF">
+    <latitude unit="DEG" type="geodetic"> 29.7331 </latitude>
+    <longitude unit="DEG"> -95.1746 </longitude>
+    <altitudeMSL unit="FT"> 1000.02 </altitudeMSL>
+  </position>
+
+  <orientation unit="DEG" frame="LOCAL">
+    <yaw> 199.593 </yaw>
+    <pitch> 13.5094 </pitch>
+    <roll> -1.02626 </roll>
+  </orientation>
+
+  <velocity unit="FT/SEC" frame="LOCAL">
+    <x> -77.816 </x>
+    <y> -23.0625 </y>
+    <z> -9.48212 </z>
+  </velocity>
+
+  <attitude_rate unit="DEG/SEC" frame="BODY">
+    <roll> 0.321257 </roll>
+    <pitch> -1.54075 </pitch>
+    <yaw> -0.274119 </yaw>
+  </attitude_rate>
+
+</initialize>

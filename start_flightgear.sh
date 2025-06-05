@@ -1,0 +1,1 @@
+~/Applications/FlightGear-2024.1.1-x86_64_1691afd135c738fc7aad45acfc865665.AppImage --fdm=jsb --aircraft=f15c --telnet=socket,bi,60,localhost,5500,tcp --fg-aircraft=/home/kaleb/.fgfs/Aircraft/org.flightgear.fgaddon.stable_2024/Aircraft

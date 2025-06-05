@@ -6,11 +6,17 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "flightgear-python>=1.7.0",
+    "gym>=0.26.2",
     "gym-jsbsim>=0.6.7",
+    "ipdb>=0.13.13",
+    "ipython>=8.36.0",
     "jedi>=0.19.2",
     "jsbsim>=1.2.2",
     "matplotlib>=3.7.5",
     "polars>=1.8.2",
+    "pyqt5>=5.15.11",
+    "pyyaml>=6.0.2",
+    "ruff>=0.11.12",
     "stable-baselines3[extra]>=2.6.0",
     "torch>=2.7.0",
 ]
