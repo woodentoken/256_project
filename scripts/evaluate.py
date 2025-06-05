@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from environment.simulation import FDM_env
+from environment.fdm_env import FDM_env
 
 env = FDM_env()
 model = PPO.load("ppo_jsbsim")
