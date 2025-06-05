@@ -5,7 +5,7 @@ import ipdb
 
 plt.rcParams['lines.linewidth'] = 2
 
-def plot_trajectory(states, actions):
+def plot_trajectory(states, actions, rewards):
     """Plot the state trajectory using polars DataFrame."""
     # Convert polars DataFrame to pandas for plotting
     figure, axes = plt.subplots(3, 3, figsize=(15, 10))
@@ -84,8 +84,33 @@ def plot_trajectory(states, actions):
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
+    # axes[1, 2].plot(states["time"], rewards["total"], label="airspeed (fps)", color="black")
+    # # Create stacked bar chart for reward components
+    # bar_width = states["time"][1] - states["time"][0] if len(states["time"]) > 1 else 1
+    
+    # axes[1, 2].bar(states["time"], rewards["preservation_bonus"], 
+    #                width=bar_width, label="preservation bonus", color="green", alpha=0.7)
+    # axes[1, 2].bar(states["time"], rewards["smoothness_bonus"], 
+    #                bottom=rewards["preservation_bonus"],
+    #                width=bar_width, label="smoothness bonus", color="blue", alpha=0.7)
+    # axes[1, 2].bar(states["time"], rewards["collision_penalty"], 
+    #                bottom=rewards["preservation_bonus"] + rewards["smoothness_bonus"],
+    #                width=bar_width, label="collision penalty", color="red", alpha=0.7)
+    # axes[1, 2].bar(states["time"], rewards["control_penalty"], 
+    #                bottom=rewards["preservation_bonus"] + rewards["smoothness_bonus"] + rewards["collision_penalty"],
+    #                width=bar_width, label="control penalty", color="orange", alpha=0.7)
+    axes[1, 2].plot(states["time"], rewards["total"], label="total reward", color="black")
+    axes[1, 2].plot(states["time"], rewards["preservation_bonus"], label="preservation bonus", color="green")
+    axes[1, 2].plot(states["time"], rewards["smoothness_bonus"], label="smoothness bonus", color="blue")
+    axes[1, 2].plot(states["time"], rewards["collision_penalty"], label="collision penalty", color="red")
+    axes[1, 2].plot(states["time"], rewards["control_penalty"], label="control penalty", color="orange")
+    axes[1, 2].plot(states["time"], rewards["attitude_penalty"], label="attitude penalty", color="purple")
+    axes[1, 2].set_xlabel("time (s)")
+    axes[1, 2].set_ylabel("reward components")
+    axes[1, 2].set_title("reward components")
+    axes[1, 2].legend()
+
     axes[0, 2].axis("off")  # Hide the empty subplot
-    axes[1, 2].axis("off")  # Hide the empty subplot
 
     figure.tight_layout()
     figure.savefig("plots/flight_dynamics_trajectory_sample.png")
@@ -134,10 +159,11 @@ def plot_path(states, interactive=False):
 if __name__ == "__main__":
     # load data from logs using pickle
     import pickle
-    with open("logs/state_action_reward_history_episode_1200.pkl", "rb") as f:
+    with open("logs/state_action_reward_history_episode_400.pkl", "rb") as f:
         data = pickle.load(f)
     states = data["state"]
     actions = data["action"]
     rewards = data["reward"]
-    plot_trajectory(states, actions)
+    ipdb.set_trace()  # Debugging breakpoint
+    plot_trajectory(states, actions, rewards)
     plot_path(states, interactive=False)

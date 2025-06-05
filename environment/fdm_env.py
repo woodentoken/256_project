@@ -31,9 +31,9 @@ class FDM_env(gym.Env):
     def __init__(self):
         super(FDM_env, self).__init__()
         self.fdm = FDM("f16")
-        self.episode_count = 0
+        self.episode_count = -1
         self.last_action = np.zeros(3, dtype=np.float32)
-        self.max_action_delta = 0.05  # Maximum change in action per step
+        self.max_action_delta = 0.2  # Maximum change in action per step
         self.logger = logging.getLogger(__name__)
 
         # Example obs and action spaces (you'll need to define real ones)
@@ -42,7 +42,7 @@ class FDM_env(gym.Env):
 
     def reset(self, seed=None, options=None):
         self.episode_count += 1
-        self.fdm.initialize(deepcopy(ic), randomization_factor=1.0)
+        self.fdm.initialize(deepcopy(ic), randomization_factor=2.0)
         self.step_count = 0
         self.last_action = np.zeros(3, dtype=np.float32)
         if self.episode_count % 100 == 0:
@@ -74,13 +74,14 @@ class FDM_env(gym.Env):
         observation = self.fdm.get_observation()
 
         # compute the reward based on the current state and action
-        reward = self.get_reward(observation, action, self.step_count)
+        reward, constituents = self.get_reward(observation, action, self.step_count)
 
         # store the state and action history
         if self.episode_count % 100 == 0:
+            # import ipdb; ipdb.set_trace()
             self.state_history = pl.concat([self.state_history, pl.DataFrame([full_state])])
             self.action_history = pl.concat([self.action_history, pl.DataFrame([self.fdm.get_input_dict()])])
-            self.reward_history = pl.concat([self.reward_history, pl.DataFrame([reward])])
+            self.reward_history = pl.concat([self.reward_history, pl.DataFrame([constituents])])
             self.logger.info(f"Step {self.step_count}:, Reward: {reward}, Action: {action}, Observation: {obs_dict}")
 
         # determine if the episode is done
@@ -116,7 +117,7 @@ class FDM_env(gym.Env):
         terminated = False
         truncated = False
 
-        if observation[0] < 50 or observation[0] > 1000000:
+        if observation[0] < 20 or observation[0] > 1000000:
             terminated = True
 
         if step_count > 66666:

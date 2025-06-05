@@ -38,7 +38,7 @@ class FDM:
         self.aircraft["atmosphere/turbulence/sigma-v"] = 10.0
         self.aircraft["atmosphere/turbulence/sigma-w"] = 10.0
 
-    def initialize(self, initial_condition, randomization_factor=1.0):
+    def initialize(self, initial_condition, randomization_factor=2.0):
         """Load initial conditions from a predefined configuration."""
 
         if randomization_factor > 0:
@@ -198,7 +198,7 @@ if __name__ == "__main__":
         _, full_state = fd.get_state_dict()
         state_trajectory.append(full_state)
 
-        fd.set_input([1.0, 1.0, 1.0, 0.0])  # this will be provided by the RL agent eventually
+        fd.set_input([0.0, 0.0, 0.0, 0.0])  # this will be provided by the RL agent eventually
         action_trajectory.append(fd.get_input_dict())
 
         # current = fd.get_state() + fd.get_input()  # this is just to trigger the computation of the state

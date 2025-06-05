@@ -6,7 +6,7 @@ from scipy.stats import norm
 attitude_ic = {
     "ic/psi-true-deg": 180,  # Heading (degrees)
     "ic/phi-deg": 0,  # Roll angle (level)
-    "ic/theta-deg": 0,  # Pitch angle (level)
+    "ic/theta-deg": 10,  # Pitch angle (level)
 }
 
 attitude_rate_ic = {
@@ -16,13 +16,13 @@ attitude_rate_ic = {
 }
 
 rate_ic = {
-    "ic/u-fps": 200.0,  # Forward velocity (m/s)
-    "ic/v-fps": 0.0,  # Sideways velocity (m/s)
-    "ic/w-fps": 0.0,  # Vertical velocity (m/s)
+    "ic/u-fps": 500.0,  # Forward velocity (ft/s)
+    "ic/v-fps": 0.0,  # Sideways velocity (ft/s)
+    "ic/w-fps": -10.0,  # Vertical velocity (ft/s)
 }
 
 position_ic = {
-    "ic/h-agl-ft": 10000.0,  # Z position (ft)
+    "ic/h-agl-ft": 5000.0,  # Z position (ft)
 }
 
 aero_ic = {
@@ -53,7 +53,7 @@ type_randomization_variance = {
     "attitude": 15,
     "attitude_rate": 5,
     "translation_rate": 20,
-    "position": 1000,
+    "position": 500,
     "aero": 10,
 }
 
