@@ -184,7 +184,7 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
 
     fd = FDM("f16")
-    fd.initialize(ic, randomization_factor=3.0)  # Load initial conditions
+    fd.initialize(ic, randomization_factor=0.0)  # Load initial conditions
 
     state_trajectory = []
     action_trajectory = []
@@ -215,5 +215,5 @@ if __name__ == "__main__":
     state_trajectory = pl.DataFrame(state_trajectory)
     action_trajectory = pl.DataFrame(action_trajectory)
 
-    plot_trajectory(state_trajectory, action_trajectory)
+    plot_trajectory(state_trajectory, action_trajectory, rewards=None)
     plot_path(state_trajectory, interactive=False)

@@ -99,16 +99,19 @@ def plot_trajectory(states, actions, rewards):
     # axes[1, 2].bar(states["time"], rewards["control_penalty"], 
     #                bottom=rewards["preservation_bonus"] + rewards["smoothness_bonus"] + rewards["collision_penalty"],
     #                width=bar_width, label="control penalty", color="orange", alpha=0.7)
-    axes[1, 2].plot(states["time"], rewards["total"], label="total reward", color="black")
-    axes[1, 2].plot(states["time"], rewards["preservation_bonus"], label="preservation bonus", color="green")
-    axes[1, 2].plot(states["time"], rewards["smoothness_bonus"], label="smoothness bonus", color="blue")
-    axes[1, 2].plot(states["time"], rewards["collision_penalty"], label="collision penalty", color="red")
-    axes[1, 2].plot(states["time"], rewards["control_penalty"], label="control penalty", color="orange")
-    axes[1, 2].plot(states["time"], rewards["attitude_penalty"], label="attitude penalty", color="purple")
-    axes[1, 2].set_xlabel("time (s)")
-    axes[1, 2].set_ylabel("reward components")
-    axes[1, 2].set_title("reward components")
-    axes[1, 2].legend()
+    if rewards is None:
+        axes[1, 2].axis("off")
+    else:            
+        axes[1, 2].plot(states["time"], rewards["total"], label="total reward", color="black")
+        axes[1, 2].plot(states["time"], rewards["preservation_bonus"], label="preservation bonus", color="green")
+        axes[1, 2].plot(states["time"], rewards["smoothness_bonus"], label="smoothness bonus", color="blue")
+        axes[1, 2].plot(states["time"], rewards["collision_penalty"], label="collision penalty", color="red")
+        axes[1, 2].plot(states["time"], rewards["control_penalty"], label="control penalty", color="orange")
+        # axes[1, 2].plot(states["time"], rewards["attitude_penalty"], label="attitude penalty", color="purple")
+        axes[1, 2].set_xlabel("time (s)")
+        axes[1, 2].set_ylabel("reward components")
+        axes[1, 2].set_title("reward components")
+        axes[1, 2].legend()
 
     axes[0, 2].axis("off")  # Hide the empty subplot
 
@@ -159,11 +162,20 @@ def plot_path(states, interactive=False):
 if __name__ == "__main__":
     # load data from logs using pickle
     import pickle
-    with open("logs/state_action_reward_history_episode_400.pkl", "rb") as f:
+    with open("logs/state_action_reward_history_episode_500.pkl", "rb") as f:
         data = pickle.load(f)
     states = data["state"]
     actions = data["action"]
     rewards = data["reward"]
-    ipdb.set_trace()  # Debugging breakpoint
     plot_trajectory(states, actions, rewards)
     plot_path(states, interactive=False)
+
+    # ipdb.set_trace()  # Set a breakpoint for debugging
+    learning = pl.read_csv("ppo_log.csv.monitor.csv")
+    figure, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(learning["episode_count"], learning["r"], label="Total Reward", color="black")
+    ax.set_xlabel("Episode Count")
+    ax.set_ylabel("Total Reward")
+    ax.set_title("Learning Progress")
+    ax.legend()
+    figure.savefig("plots/learning_progress.png")

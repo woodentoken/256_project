@@ -26,14 +26,14 @@ def train(algo, subconfig):
 
     ppo_model = algo("MlpPolicy", env, verbose=1, tensorboard_log="./ppo_jsbsim_tensorboard/", **ppo_kwargs)
 
-    ppo_model.learn(total_timesteps=300_000)  # Adjust the number of timesteps as needed
+    ppo_model.learn(total_timesteps=1_000_000)  # Adjust the number of timesteps as needed
     ppo_model.save("models/ppo_jsbsim")  # Save the trained model
     print("Training complete. Model saved as 'ppo_jsbsim'.")
 
-    env.save(f"models/{subconfig}_jsbsim_normalize.pkl")  # Save the VecNormalize statistics
+    env.save(f"models/{subconfig}_big_jsbsim_normalize.pkl")  # Save the VecNormalize statistics
 
 if __name__ == "__main__":
+    # train(algo=PPO, subconfig="ppo")
+    # train(algo=PPO, subconfig="ppo_fast_learner")
+    # train(algo=PPO, subconfig="ppo_low_gamma")
     train(algo=PPO, subconfig="ppo")
-    train(algo=PPO, subconfig="ppo_fast_learner")
-    train(algo=PPO, subconfig="ppo_low_gamma")
-    train(algo=PPO, subconfig="ppo_fast_learner_low_gamma")
