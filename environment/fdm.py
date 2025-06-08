@@ -9,9 +9,8 @@ import polars as pl
 
 # Add parent directory to path so we can import from sibling directories
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.plotting import plot_path, plot_trajectory
 from config.f16_ic_config import ic, type_randomization_variance
-
+from utils.plotting import plot_path, plot_trajectory
 
 jsbsim.FGJSBBase().debug_lvl = 0
 
@@ -19,6 +18,7 @@ jsbsim.FGJSBBase().debug_lvl = 0
 DT = 0.1
 RAD2DEG = 180.0 / np.pi
 EARTH_RADIUS = 20925646.3  # Earth radius in feet (mean radius)
+
 
 class FDM:
     def __init__(self, aircraft_model):
@@ -57,7 +57,6 @@ class FDM:
             self.aircraft[ic_name] = final_ic[ic_name]
 
         self.aircraft.run_ic()
-
 
     def propagate_dynamics(self):
         self.aircraft.run()
@@ -117,7 +116,7 @@ class FDM:
                 full_state.pop(key, None)
 
         return observed_states, full_state
-    
+
     def get_observation(self, exclude=None):
         """Get the current observation from the aircraft's state.
 
@@ -159,7 +158,7 @@ class FDM:
             "rudder": self.aircraft["fcs/rudder-cmd-norm"],
             # "throttle": self.aircraft["fcs/throttle-cmd-norm"],
         }
-    
+
     def get_input(self):
         """Get the current control inputs as a list."""
         return [

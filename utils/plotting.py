@@ -10,20 +10,29 @@ def plot_trajectory(states, actions, rewards):
     # Convert polars DataFrame to pandas for plotting
     figure, axes = plt.subplots(3, 3, figsize=(15, 10))
     states = states.with_columns(time = states["time"] - states["time"][0])  # Normalize time to start from 0
-    axes[0, 0].plot(states["time"], states["x"], label="x position (ft)")
-    axes[0, 0].plot(states["time"], states["y"], label="y position (ft)")
-    axes[0, 0].plot(states["time"], states["altitude"], label="altitude (ft)")
+    
+    axright00 = axes[0, 0].twinx()
+    axright00.set_ylabel("xy position (ft)")
+    axright00.legend(loc="lower right")
+    axright00.plot(states["time"], states["x"], label="x position (ft)")
+    axright00.plot(states["time"], states["y"], label="y position (ft)")
+    axright00.legend(loc="lower right")
 
     # axes[0,0].plot(states['time'], states['z'], label='z position (ft)')
-    axes[0, 0].set_xlabel("time (s)")
-    axes[0, 0].set_ylabel("distance (ft)")
+    axes[0, 0].plot(states["time"], states["altitude"], label="altitude (ft)", linewidth=4, color="black")
+    # axes[0, 0].set_xlabel("time (s)")
+    axes[0,0].set_xticklabels([])  # Hide x-tick labels
+
+    axes[0, 0].set_ylabel("altitude (ft)")
     axes[0, 0].set_title("position")
     axes[0, 0].legend()
 
     axes[0, 1].plot(states["time"], states["u"], label="u velocity (fps)")
     axes[0, 1].plot(states["time"], states["v"], label="v velocity (fps)")
     axes[0, 1].plot(states["time"], -states["w"], label="w velocity (fps)")
-    axes[0, 1].set_xlabel("time (s)")
+    # axes[0, 1].set_xlabel("time (s)")
+    axes[0,1].set_xticklabels([])  # Hide x-tick labels
+
     axes[0, 1].set_ylabel("velocity components")
     axes[0, 1].set_title("aircraft velocities")
     axes[0, 1].legend()
@@ -31,7 +40,9 @@ def plot_trajectory(states, actions, rewards):
     axes[1, 0].plot(states["time"], states["phi"], label="phi (deg)")
     axes[1, 0].plot(states["time"], states["theta"], label="theta (deg)")
 
-    axes[1, 0].set_xlabel("time (s)")
+    # axes[1, 0].set_xlabel("time (s)")
+    axes[1,0].set_xticklabels([])  # Hide x-tick labels
+
     axes[1, 0].set_ylabel("attitude angles (deg)")
     axes[1, 0].set_title("attitude")
     axes[1, 0].legend(loc="lower right")
@@ -39,7 +50,9 @@ def plot_trajectory(states, actions, rewards):
     axes[1, 1].plot(states["time"], states["p"], label="p (deg/s)")
     axes[1, 1].plot(states["time"], states["q"], label="q (deg/s)")
     axes[1, 1].plot(states["time"], states["r"], label="r (deg/s)")
-    axes[1, 1].set_xlabel("time (s)")
+    # axes[1, 1].set_xlabel("time (s)")
+    axes[1,1].set_xticklabels([])  # Hide x-tick labels
+
     axes[1, 1].set_ylabel("angular rates (deg/s)")
     axes[1, 1].set_title("angular rates")
     axes[1, 1].legend()
@@ -51,15 +64,15 @@ def plot_trajectory(states, actions, rewards):
     axes[2, 0].set_title("aerodynamic angles")
     axes[2, 0].legend(loc="lower right")
 
-    axright = axes[2, 1].twinx()
-    axright.plot(states["time"], states["psi"], label="psi (deg)", color="blue")
-    axright.set_ylabel("heading angle (deg)")
-    axright.legend(loc="upper right")
-    axright.yaxis.label.set_color("blue")
-    axright.axhline(y=0, color="gray", linewidth=2)
-    axright.axhline(y=360, color="gray", linewidth=2)
-    axright.set_yticks(np.arange(0, 360, 60))
-    axright.set_ylim(0, 360)
+    axright21 = axes[2, 1].twinx()
+    axright21.plot(states["time"], states["psi"], label="psi (deg)", color="blue")
+    axright21.set_ylabel("heading angle (deg)")
+    axright21.legend(loc="upper right")
+    axright21.yaxis.label.set_color("blue")
+    axright21.axhline(y=0, color="gray", linewidth=2)
+    axright21.axhline(y=360, color="gray", linewidth=2)
+    axright21.set_yticks(np.arange(0, 360, 60))
+    axright21.set_ylim(0, 360)
     axes[2, 1].plot(states["time"], states["gamma"], label="gamma (deg)", color="green")
     axes[2, 1].set_xlabel("time (s)")
     axes[2, 1].set_ylabel("heading angle (deg)")
@@ -84,36 +97,34 @@ def plot_trajectory(states, actions, rewards):
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
-    # axes[1, 2].plot(states["time"], rewards["total"], label="airspeed (fps)", color="black")
-    # # Create stacked bar chart for reward components
-    # bar_width = states["time"][1] - states["time"][0] if len(states["time"]) > 1 else 1
-    
-    # axes[1, 2].bar(states["time"], rewards["preservation_bonus"], 
-    #                width=bar_width, label="preservation bonus", color="green", alpha=0.7)
-    # axes[1, 2].bar(states["time"], rewards["smoothness_bonus"], 
-    #                bottom=rewards["preservation_bonus"],
-    #                width=bar_width, label="smoothness bonus", color="blue", alpha=0.7)
-    # axes[1, 2].bar(states["time"], rewards["collision_penalty"], 
-    #                bottom=rewards["preservation_bonus"] + rewards["smoothness_bonus"],
-    #                width=bar_width, label="collision penalty", color="red", alpha=0.7)
-    # axes[1, 2].bar(states["time"], rewards["control_penalty"], 
-    #                bottom=rewards["preservation_bonus"] + rewards["smoothness_bonus"] + rewards["collision_penalty"],
     #                width=bar_width, label="control penalty", color="orange", alpha=0.7)
     if rewards is None:
         axes[1, 2].axis("off")
+        axes[0, 2].axis("off")  # Hide the empty subplot
     else:            
-        axes[1, 2].plot(states["time"], rewards["total"], label="total reward", color="black")
+        axes[1, 2].plot(states["time"], rewards["total"], label="total reward", color="black", linewidth=2)
         axes[1, 2].plot(states["time"], rewards["preservation_bonus"], label="preservation bonus", color="green")
-        axes[1, 2].plot(states["time"], rewards["smoothness_bonus"], label="smoothness bonus", color="blue")
-        axes[1, 2].plot(states["time"], rewards["collision_penalty"], label="collision penalty", color="red")
+        axes[1, 2].plot(states["time"], rewards["smoothness_penalty"], label="smoothness bonus", color="red")
         axes[1, 2].plot(states["time"], rewards["control_penalty"], label="control penalty", color="orange")
-        # axes[1, 2].plot(states["time"], rewards["attitude_penalty"], label="attitude penalty", color="purple")
-        axes[1, 2].set_xlabel("time (s)")
+        # axes[1, 2].set_xlabel("time (s)")
+        axes[1,2].set_xticklabels([])  # Hide x-tick labels
         axes[1, 2].set_ylabel("reward components")
         axes[1, 2].set_title("reward components")
         axes[1, 2].legend()
+        axes[1,2].set_ylim(-20, 100)
 
-    axes[0, 2].axis("off")  # Hide the empty subplot
+        # get rewards
+        axes[0, 2].plot(states["time"], rewards["total"].cum_sum(), label="total reward", color="black", linewidth=2)
+        axes[0, 2].plot(states["time"], rewards["preservation_bonus"].cum_sum(), label="preservation bonus", color="green")
+        axes[0, 2].plot(states["time"], rewards["smoothness_penalty"].cum_sum(), label="smoothness bonus", color="red")
+        axes[0, 2].plot(states["time"], rewards["control_penalty"].cum_sum(), label="control penalty", color="orange")
+        # axes[0, 2].set_xlabel("time (s)")
+        axes[0,2].set_xticklabels([])  # Hide x-tick labels
+        axes[0, 2].set_ylabel("return")
+        axes[0, 2].set_title("accumulated rewards")
+        axes[0, 2].legend()
+        # axes[0,2].plot(states["time"], rewards["total"].rolling_mean(100), label="smoothed total reward", color="blue")
+
 
     figure.tight_layout()
     figure.savefig("plots/flight_dynamics_trajectory_sample.png")
@@ -175,7 +186,7 @@ def plot_smoothed_rewards(rewards, window_size=100):
 if __name__ == "__main__":
     # load data from logs using pickle
     import pickle
-    with open("logs/state_action_reward_history_episode_800.pkl", "rb") as f:
+    with open("logs/state_action_reward_history_episode_1000.pkl", "rb") as f:
         data = pickle.load(f)
     states = data["state"]
     actions = data["action"]

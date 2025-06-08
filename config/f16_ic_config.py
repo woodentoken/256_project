@@ -53,7 +53,7 @@ type_randomization_variance = {
     "attitude": 30,
     "attitude_rate": 10,
     "translation_rate": 40,
-    "position": 500,
+    "position": 100,
     "aero": 7,
 }
 

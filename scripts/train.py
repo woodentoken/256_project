@@ -19,16 +19,16 @@ def train(algo, subconfig):
     ppo_kwargs = config.get(subconfig, {})
     print(ppo_kwargs)
 
-    env = DummyVecEnv(
+    train_env = DummyVecEnv(
         [
             lambda: Monitor(
-                FDM_env(),
+                FDM_env(randomization_factor=2.0),
                 filename=f"training_logs/{subconfig}_log.csv",
                 info_keywords=("terminated", "truncated", "episode_count"),
             )
         ]  # Wrap the environment in a Monitor for logging
     )  # Wrap the environment in a DummyVecEnv for vectorized trainin
-    env = VecNormalize(env, norm_obs=True, norm_reward=True)  # Normalize observations and rewards
+    env = VecNormalize(train_env, norm_obs=True, norm_reward=True)  # Normalize observations and rewards
 
     eval_env = DummyVecEnv([lambda: FDM_env()])  # Create a vectorized environment for evaluation
     eval_env = VecNormalize(
@@ -49,19 +49,18 @@ def train(algo, subconfig):
     env.reset()  # Reset the environment to get the initial observation
     ppo_model = algo("MlpPolicy", env, verbose=1, tensorboard_log="./ppo_jsbsim_tensorboard/", **ppo_kwargs)
     ppo_model.learn(
-        total_timesteps=666_666, callback=eval_callback, tb_log_name=subconfig
+        total_timesteps=1_000_000, callback=eval_callback, tb_log_name=subconfig
     )  # Adjust the number of timesteps as needed
 
-    ppo_model.save(f"models/{subconfig}")  # Save the trained model
     env.save(f"models/{subconfig}_normalize.pkl")  # Save the VecNormalize statistics
     print(f"Training complete. Model saved as '{subconfig}.zip'.")
 
 
 if __name__ == "__main__":
-    # train(algo=PPO, subconfig="")
-    # train(algo=PPO, subconfig="ppo_fast_learner")
-    # train(algo=PPO, subconfig="ppo_low_gamma")
-    # train(algo=PPO, subconfig="ppo")
     # get the top level configs from the config file
-    for subconfig in ["a=0.0005, gamma=0.99", "a=0.0005, gamma=0.97", "a=0.005, gamma=0.99", "a=0.005, gamma=0.97"]:
+    with open("config/ppo_config.yaml", "r") as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    top_level_configs = list(config.keys())
+
+    for subconfig in top_level_configs:
         train(algo=PPO, subconfig=subconfig)

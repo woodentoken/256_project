@@ -9,6 +9,7 @@ dependencies = [
     "gym>=0.26.2",
     "gym-jsbsim>=0.6.7",
     "gymnasium>=1.1.1",
+    "icecream>=2.1.4",
     "ipdb>=0.13.13",
     "ipython>=8.36.0",
     "jedi>=0.19.2",
