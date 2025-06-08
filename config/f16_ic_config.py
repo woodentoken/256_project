@@ -50,11 +50,11 @@ ic = {
 
 # amount of randomization for each type
 type_randomization_variance = {
-    "attitude": 15,
-    "attitude_rate": 5,
-    "translation_rate": 20,
+    "attitude": 30,
+    "attitude_rate": 10,
+    "translation_rate": 40,
     "position": 500,
-    "aero": 10,
+    "aero": 7,
 }
 
 if __name__ == "__main__":
@@ -72,7 +72,9 @@ if __name__ == "__main__":
 
     ax.set_xlabel("Value")
     ax.set_ylabel("Probability Density")
-    ax.set_title("Normal Distributions for Type Randomization Variance")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    plt.show()
+    ax.set_title("Distribution of initial condition randomization per type")
+    ax.legend(frameon=False, loc="upper right")
+    # remove the top and right spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    figure.savefig("type_randomization_variance.png", dpi=300, bbox_inches="tight")

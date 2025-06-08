@@ -159,10 +159,23 @@ def plot_path(states, interactive=False):
     else:
         fig.savefig("plots/flight_path_sample.png")
 
+def plot_smoothed_rewards(rewards, window_size=100):
+    """Plot smoothed rewards over time."""
+    smoothed_rewards = rewards.rolling(window_size).mean()
+    plt.figure(figsize=(10, 5))
+    plt.plot(smoothed_rewards, label=f"Smoothed Rewards (window={window_size})", color="blue")
+    plt.xlabel("Episode Count")
+    plt.ylabel("Smoothed Total Reward")
+    plt.title("Smoothed Rewards Over Time")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig("plots/smoothed_rewards.png")
+
 if __name__ == "__main__":
     # load data from logs using pickle
     import pickle
-    with open("logs/state_action_reward_history_episode_500.pkl", "rb") as f:
+    with open("logs/state_action_reward_history_episode_800.pkl", "rb") as f:
         data = pickle.load(f)
     states = data["state"]
     actions = data["action"]
@@ -171,9 +184,12 @@ if __name__ == "__main__":
     plot_path(states, interactive=False)
 
     # ipdb.set_trace()  # Set a breakpoint for debugging
-    learning = pl.read_csv("ppo_log.csv.monitor.csv")
+    learning = pl.read_csv("training_logs/ppo_log.csv.monitor.csv", skip_rows=1)
     figure, ax = plt.subplots(figsize=(10, 5))
+    # get smoothed rewards
+    smoothed_rewards = learning["r"].rolling_mean(100)
     ax.plot(learning["episode_count"], learning["r"], label="Total Reward", color="black")
+    ax.plot(learning["episode_count"], smoothed_rewards, label="Smoothed Total Reward", color="blue")
     ax.set_xlabel("Episode Count")
     ax.set_ylabel("Total Reward")
     ax.set_title("Learning Progress")

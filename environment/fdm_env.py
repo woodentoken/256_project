@@ -42,7 +42,7 @@ class FDM_env(gym.Env):
 
     def reset(self, seed=None, options=None):
         self.episode_count += 1
-        self.fdm.initialize(deepcopy(ic), randomization_factor=2.0)
+        self.fdm.initialize(deepcopy(ic), randomization_factor=1.0)
         self.step_count = 0
         self.last_action = np.zeros(3, dtype=np.float32)
         if self.episode_count % 100 == 0:
@@ -77,7 +77,7 @@ class FDM_env(gym.Env):
         reward, constituents = self.get_reward(observation, action, self.step_count)
 
         # store the state and action history
-        if self.episode_count % 100 == 0:
+        if self.episode_count % 200 == 0:
             # import ipdb; ipdb.set_trace()
             self.state_history = pl.concat([self.state_history, pl.DataFrame([full_state])])
             self.action_history = pl.concat([self.action_history, pl.DataFrame([self.fdm.get_input_dict()])])
@@ -92,10 +92,11 @@ class FDM_env(gym.Env):
             "terminated": terminated,
             "truncated": truncated,
             "episode_count": self.episode_count,
+
         }
 
         if terminated or truncated:
-            if self.episode_count % 100 == 0:
+            if self.episode_count % 200 == 0:
                 self.logger.info(f"Episode ended: Terminated: {terminated}, Truncated: {truncated}, Time: {time}\n\n\n")
             # save the state and action history to a pickle file
                 with open(f"logs/state_action_reward_history_episode_{self.episode_count}.pkl", "wb") as f:
