@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from environment.fdm_env import FDM_env
 from utils.plotting import plot_path, plot_trajectory
 
+# change model meta to the model you want to evaluate
 model_meta = "a=0.0002, gamma=0.99"
 SEED = 666
 

@@ -49,7 +49,7 @@ def train(algo, subconfig):
     env.reset()  # Reset the environment to get the initial observation
     ppo_model = algo("MlpPolicy", env, verbose=1, tensorboard_log="./ppo_jsbsim_tensorboard/", **ppo_kwargs)
     ppo_model.learn(
-        total_timesteps=1_000_000, callback=eval_callback, tb_log_name=subconfig
+        total_timesteps=1_000_00, callback=eval_callback, tb_log_name=subconfig
     )  # Adjust the number of timesteps as needed
 
     env.save(f"models/{subconfig}_normalize.pkl")  # Save the VecNormalize statistics
